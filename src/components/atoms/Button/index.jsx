@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 const Button = ({
   type = "button",
@@ -7,6 +8,7 @@ const Button = ({
   color = "primary",
   classname,
   children,
+  onClick,
 }) => {
   // Define size classes
   const sizeClasses = {
@@ -24,6 +26,7 @@ const Button = ({
 
   return (
     <button
+      onClick={onClick}
       type={type}
       className={`font-medium rounded-[40px] text-center ${sizeClasses[size]} ${colorClasses[color]} ${classname}`}
     >

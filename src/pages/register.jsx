@@ -4,7 +4,7 @@ import RegisterForm from "../components/organism/RegisterForm";
 function RegisterPage() {
   return (
     <div>
-      <div className="flex items-center justify-center min-h-screen pt-6">
+      <div className="flex items-center justify-center md:min-h-screen pt-6">
         <RegisterForm />
       </div>
     </div>

@@ -66,9 +66,12 @@ const FormLogin = () => {
   const remainingAttempts = MAX_LOGIN_ATTEMPTS - loginAttempts;
 
   return (
-    <form className="max-w-2xl mx-auto bg-white p-8" onSubmit={handleLogin}>
+    <form
+      className="max-w-xl md:max-w-2xl mx-auto bg-white p-8"
+      onSubmit={handleLogin}
+    >
       <div className="flex justify-center">
-        <img src={logo} alt="Login" className="w-[530px]" />
+        <img src={logo} alt="Login" className="md:w-[530px]" />
       </div>
       {/* {error && <div className="text-red-500 text-sm font-medium">{error}</div>} */}
       {loginAttempts >= 3 && (
@@ -115,7 +118,7 @@ const FormLogin = () => {
           type="submit"
           size="large"
           color="primary"
-          classname={` hover:bg-[#27858b] focus:ring-4 focus:ring-[#16737a] `}
+          classname={` hover:bg-[#27858b] focus:ring-4 md:w-[100%] w-[80%] focus:ring-[#16737a] `}
         >
           {loading ? "Signing in..." : "Sign In"}
         </Button>

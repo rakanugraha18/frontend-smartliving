@@ -1,4 +1,5 @@
-<svg width="91" height="90" viewBox="0 0 91 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="0.142822" width="90" height="90" rx="30" fill="#EBEEF3"/>
-<path d="M15.6428 21H75.6428M68.1428 21L75.6428 69M23.1428 21L15.6428 69M21.6428 36H69.6428" stroke="black" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="73" height="72" viewBox="0 0 73 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Category set">
+<path id="Vector" d="M6.64282 12H66.6428M59.1428 12L66.6428 60M14.1428 12L6.64282 60M12.6428 27H60.6428" stroke="black" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
 </svg>

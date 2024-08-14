@@ -4,7 +4,7 @@ import InputForm from "../../atoms/Input/index";
 import { useState } from "react";
 import registerUser from "../../api/registerUser";
 import banner from "../../../assets/bannerRegister.svg";
-import TextArea from "../../atoms/Input/TextArea";
+import logoSmartliving from "../../../assets/LogoSmartLiving.svg";
 
 const FormRegister = () => {
   const navigate = useNavigate();
@@ -95,16 +95,19 @@ const FormRegister = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="bg-white shadow-lg drop-shadow rounded-2xl w-full lg:w-auto lg:max-w-full lg:max-h-full min-w-[320px] lg:min-w-[837px] min-h-[983px] mx-4 lg:mx-[26px] p-4 lg:p-8 flex justify-center items-center relative">
-          <form
-            className="w-full px-4 lg:px-[132px]"
-            action="#"
-            onSubmit={handleRegister}
-          >
+        <div className="bg-white md:shadow-lg rounded-2xl w-full lg:w-auto lg:max-w-full lg:max-h-full min-w-[320px] lg:min-w-[837px] min-h-[983px] mx-4 lg:mx-[26px] p-4 lg:p-8 flex justify-center items-center relative">
+          <form className="w-full px-4 lg:px-[132px]" onSubmit={handleRegister}>
+            <div className="flex justify-center my-5">
+              <img
+                src={logoSmartliving}
+                alt="logo-smartliving"
+                className="md:hidden flex items-center justify-center "
+              />
+            </div>
             <div className="flex lg:absolute top-4 right-4 pt-2 pr-7 pb-2">
               <p>
                 Already have an account?{" "}
-                <a href="/login" className="font-semibold text-bold underline">
+                <a href="/login" className="font-semibold underline">
                   Sign In
                 </a>
               </p>
@@ -114,11 +117,11 @@ const FormRegister = () => {
               <p>Please enter your details to create your account</p>
             </div>
             {errors.server && (
-              <div className="text-xs text-red-500 mt-[-8px] mb-3 dark:text-red-400">
+              <div className="text-xs text-red-500 mt-[-8px] mb-3">
                 {errors.server}
               </div>
             )}
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-between gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <InputForm
                   label="First Name"
@@ -132,7 +135,7 @@ const FormRegister = () => {
                   onChange={handleInputChange}
                 />
                 {errors.firstName && (
-                  <div className="text-xs text-red-500 mt-[-8px] mb-3 dark:text-red-400">
+                  <div className="text-xs text-red-500 mt-[-8px] mb-3">
                     {errors.firstName}
                   </div>
                 )}
@@ -150,7 +153,7 @@ const FormRegister = () => {
                   onChange={handleInputChange}
                 />
                 {errors.lastName && (
-                  <div className="text-xs grid-cols-1 text-red-500 mt-[-8px] mb-3 dark:text-red-400">
+                  <div className="text-xs text-red-500 mt-[-8px] mb-3">
                     {errors.lastName}
                   </div>
                 )}
@@ -169,7 +172,7 @@ const FormRegister = () => {
                 onChange={handleInputChange}
               />
               {errors.email && (
-                <div className="text-xs text-red-500 mt-[-8px] mb-3 dark:text-red-400">
+                <div className="text-xs text-red-500 mt-[-8px] mb-3">
                   {errors.email}
                 </div>
               )}
@@ -178,7 +181,7 @@ const FormRegister = () => {
               <InputForm
                 label="Phone Number"
                 htmlFor="phoneNumber"
-                type="phoneNumber"
+                type="tel"
                 name="phoneNumber"
                 id="phoneNumber"
                 placeholder="Phone Number"
@@ -187,12 +190,11 @@ const FormRegister = () => {
                 onChange={handleInputChange}
               />
               {errors.phoneNumber && (
-                <div className="text-xs text-red-500 mt-[-8px] mb-3 dark:text-red-400">
+                <div className="text-xs text-red-500 mt-[-8px] mb-3">
                   {errors.phoneNumber}
                 </div>
               )}
             </div>
-
             <div>
               <InputForm
                 label="Your Password"
@@ -206,13 +208,13 @@ const FormRegister = () => {
                 onChange={handleInputChange}
               />
               {errors.password && (
-                <div className="text-xs text-red-500 mt-[-8px] mb-3 dark:text-red-400">
+                <div className="text-xs text-red-500 mt-[-8px] mb-3">
                   {errors.password}
                 </div>
               )}
             </div>
             <div className="mb-4">
-              <label className="inline-flex justify-center items-center">
+              <label className="inline-flex items-center">
                 <input
                   type="checkbox"
                   name="termsAccepted"
@@ -229,7 +231,7 @@ const FormRegister = () => {
                 size="large"
                 color="primary"
                 type="submit"
-                classname={` hover:bg-[#27858b] focus:ring-4 focus:ring-[#16737a]`}
+                classname="hover:bg-[#27858b] md:w-[100%] w-[80%] focus:ring-4 focus:ring-[#16737a]"
               >
                 {loading ? "Register loading..." : "Sign up account"}
               </Button>
@@ -242,41 +244,3 @@ const FormRegister = () => {
 };
 
 export default FormRegister;
-
-{
-  /* <div>
-              <TextArea
-                label="Address"
-                htmlFor="address"
-                type="address"
-                name="address"
-                id="address"
-                placeholder="Address"
-                value={formData.address}
-                onChange={handleInputChange}
-              />
-              {errors.address && (
-                <div className="text-xs text-red-500 mt-[-8px] mb-3 dark:text-red-400">
-                  {errors.address}
-                </div>
-              )}
-            </div>
-            <div>
-              <InputForm
-                label="Postal Code"
-                htmlFor="postalCode"
-                type="postalCode"
-                name="postalCode"
-                id="postalCode"
-                placeholder="Postal Code"
-                required
-                value={formData.postalCode}
-                onChange={handleInputChange}
-              />
-              {errors.postalCode && (
-                <div className="text-xs text-red-500 mt-[-8px] mb-3 dark:text-red-400">
-                  {errors.postalCode}
-                </div>
-              )}
-            </div> */
-}
