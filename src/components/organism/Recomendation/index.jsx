@@ -100,7 +100,7 @@ const Recomendation = () => {
                     id={product.id}
                     title={product.name}
                     beforeDiscount={product.price}
-                    img={`${imgUrl}${product.image}`}
+                    img={product.image}
                     priceAfterDiscount={product.price}
                     freeDelivery="FREE DELIVERY SERVICES"
                     classname="max-w-[176px]"

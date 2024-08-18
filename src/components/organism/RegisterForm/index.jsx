@@ -3,8 +3,13 @@ import Button from "../../atoms/Button";
 import InputForm from "../../atoms/Input/index";
 import { useState } from "react";
 import registerUser from "../../api/registerUser";
-import banner from "../../../assets/bannerRegister.svg";
 import logoSmartliving from "../../../assets/LogoSmartLiving.svg";
+import Slider1 from "../../../assets/images/slider-register/registerSlider1.png";
+import Slider2 from "../../../assets/images/slider-register/registerSlider2.png";
+import Slider3 from "../../../assets/images/slider-register/registerSlider3.png";
+import PortraitCarousel from "../../molecules/PortraitCarousel";
+
+const sliders = [Slider1, Slider2, Slider3];
 
 const FormRegister = () => {
   const navigate = useNavigate();
@@ -85,17 +90,22 @@ const FormRegister = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex md:justify-center md:items-center md:min-h-screen">
       <div className="flex flex-col lg:flex-row">
         {/* Banner */}
         <div className="hidden lg:block min-w-[256px] lg:min-w-[512px] h-[300px] lg:h-[983px]">
-          <img
-            src={banner}
-            alt="Banner"
-            className="w-full h-full object-cover"
-          />
+          <PortraitCarousel autoSlide={true} autoSlideInterval={3000}>
+            {sliders.map((slider, index) => (
+              <img
+                key={index}
+                src={slider}
+                alt={`Slider ${index + 1}`}
+                className="w-full h-auto"
+              />
+            ))}
+          </PortraitCarousel>
         </div>
-        <div className="bg-white md:shadow-lg rounded-2xl w-full lg:w-auto lg:max-w-full lg:max-h-full min-w-[320px] lg:min-w-[837px] min-h-[983px] mx-4 lg:mx-[26px] p-4 lg:p-8 flex justify-center items-center relative">
+        <div className="bg-white md:shadow-lg rounded-2xl md:w-full lg:w-auto lg:max-w-full lg:max-h-full md:min-w-[320px] lg:min-w-[837px] md:min-h-[983px] mx-4 lg:mx-[26px] p-4 lg:p-8 flex justify-center items-center relative">
           <form className="w-full px-4 lg:px-[132px]" onSubmit={handleRegister}>
             <div className="flex justify-center my-5">
               <img

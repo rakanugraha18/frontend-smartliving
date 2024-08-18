@@ -1,44 +1,33 @@
 // import React, { useState } from "react";
-// import axios from "axios";
-// import Button from "../../atoms/Button";
+// import { useCart } from "../../../context/cartContext";
 // import formatRupiah from "../../../utils/formatRupiah";
 
 // const CartItem = ({ product, onSelect, isSelected }) => {
-//   const { image, name, price, id } = product;
-//   const [quantity, setQuantity] = useState(product.quantity || 1);
+//   const { id, image, name, price, quantity: initialQuantity } = product;
+//   const [quantity, setQuantity] = useState(initialQuantity || 1);
+//   const { updateQuantity } = useCart();
 //   const total = price * quantity;
-
-//   const updateQuantity = async (newQuantity) => {
-//     try {
-//       // Panggil API untuk update quantity di backend
-//       await axios.put(`${import.meta.env.VITE_API_BASEURL}/cart/items/${id}`, {
-//         quantity: newQuantity,
-//       });
-//     } catch (error) {
-//       console.error("Failed to update quantity:", error);
-//     }
-//   };
 
 //   const handleIncrease = () => {
 //     const newQuantity = quantity + 1;
 //     setQuantity(newQuantity);
-//     updateQuantity(newQuantity);
+//     updateQuantity(id, newQuantity); // Update quantity di backend
 //   };
 
 //   const handleDecrease = () => {
 //     if (quantity > 1) {
 //       const newQuantity = quantity - 1;
 //       setQuantity(newQuantity);
-//       updateQuantity(newQuantity);
+//       updateQuantity(id, newQuantity); // Update quantity di backend
 //     }
 //   };
 
 //   const handleCheckboxChange = (e) => {
-//     onSelect(id, e.target.checked);
+//     onSelect(id, e.target.checked); // Panggil onSelect saat checkbox berubah
 //   };
 
 //   return (
-//     <div className="flex flex-col-2 md:flex-row items-center justify-between border-b py-4 px-2 md:px-4">
+//     <div className="flex flex-row md:flex-row items-center justify-between border-b py-4 px-2 md:px-4">
 //       <input
 //         type="checkbox"
 //         checked={isSelected}
@@ -116,27 +105,38 @@ import { useCart } from "../../../context/cartContext";
 import formatRupiah from "../../../utils/formatRupiah";
 
 const CartItem = ({ product, onSelect, isSelected }) => {
-  const { id, image, name, price, quantity: initialQuantity } = product;
+  const {
+    id,
+    image,
+    name,
+    price,
+    quantity: initialQuantity,
+    discount,
+  } = product;
   const [quantity, setQuantity] = useState(initialQuantity || 1);
   const { updateQuantity } = useCart();
-  const total = price * quantity;
+
+  // Hitung diskon dan harga setelah diskon
+  const discountAmount = discount ? (price * discount) / 100 : 0;
+  const discountedPrice = price - discountAmount;
+  const total = discountedPrice * quantity;
 
   const handleIncrease = () => {
     const newQuantity = quantity + 1;
     setQuantity(newQuantity);
-    updateQuantity(id, newQuantity); // Pass both id and newQuantity
+    updateQuantity(id, newQuantity); // Update quantity di backend
   };
 
   const handleDecrease = () => {
     if (quantity > 1) {
       const newQuantity = quantity - 1;
       setQuantity(newQuantity);
-      updateQuantity(id, newQuantity); // Pass both id and newQuantity
+      updateQuantity(id, newQuantity); // Update quantity di backend
     }
   };
 
   const handleCheckboxChange = (e) => {
-    onSelect(id, e.target.checked);
+    onSelect(id, e.target.checked); // Panggil onSelect saat checkbox berubah
   };
 
   return (
@@ -161,9 +161,13 @@ const CartItem = ({ product, onSelect, isSelected }) => {
         <span className="md:ml-4 text-left text-gray-700">{name}</span>
         <span className="w-full md:w-1/6 text-left text-xs text-gray-700 mb-4 md:mb-0">
           <span className="text-gray-700 font-bold justify-center text-xs">
-            Price:{" "}
+            Harga:{" "}
           </span>
           {formatRupiah(price)}
+        </span>
+        <span className="w-full md:w-1/6 text-left text-xs text-gray-700 mb-4 md:mb-0">
+          <span className="text-gray-700 font-bold text-xs">Diskon: </span>
+          {discount ? `${discount}%` : "Tidak Ada Diskon"}
         </span>
         <div className="w-full md:w-1/6 flex text-xs md:text-base items-center justify-left text-gray-700 mb-4 md:mb-0">
           <span className="text-gray-700 font-bold text-xs pr-2">Qty: </span>
@@ -188,6 +192,9 @@ const CartItem = ({ product, onSelect, isSelected }) => {
       </div>
       <span className="hidden md:flex w-full md:w-1/6 text-center justify-center text-gray-700 mb-4 md:mb-0">
         {formatRupiah(price)}
+      </span>
+      <span className="hidden md:flex w-full md:w-1/6 text-center justify-center text-gray-700 mb-4 md:mb-0">
+        {discount ? `${discount}%` : "Tidak Ada Diskon"}
       </span>
       <div className="hidden md:flex w-full md:w-1/6 items-center justify-center text-gray-700 mb-4 md:mb-0">
         <button

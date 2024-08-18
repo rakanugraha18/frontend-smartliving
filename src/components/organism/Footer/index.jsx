@@ -12,8 +12,8 @@ function Index() {
   return (
     <div>
       <Subscription />
-      <div className="flex justify-center">
-        <div className="flex justify-center flex-col w-full max-w-screen-xl sm:flex-row sm:flex-wrap  pt-9 pb-9 px-5 font-poppins text-base mx-3 md:mx-[60px] space-y-4 md:space-y-0 md:space-x-12">
+      <div className="flex justify-center my-5">
+        <div className="flex justify-between w-full max-w-screen-xl p-3">
           <div className="space-y-2">
             <h2 className="text-lg font-semibold">FAQ</h2>
             <div className="text-xs space-y-2">
