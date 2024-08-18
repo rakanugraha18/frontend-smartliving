@@ -1,5 +1,3 @@
-// src/pages/OrderDetails.js
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import formatRupiah from "../utils/formatRupiah";
