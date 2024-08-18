@@ -15,7 +15,9 @@ const loginUser = async (email, password) => {
     );
 
     const token = resLogin.data.token;
+    const user_id = resLogin.data.userId;
     localStorage.setItem("token", token);
+    localStorage.setItem("user_id", user_id);
 
     return token;
   } catch (error) {
