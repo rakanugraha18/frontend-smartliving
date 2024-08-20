@@ -21,7 +21,7 @@ const Button = ({
   // Define color classes
   const colorClasses = {
     primary: "bg-[#16697A] text-white",
-    secondary: "bg-white border-[#16697A] text-[#16697A]",
+    secondary: "bg-white border-[#16697A] border-2 text-[#16697A]",
   };
 
   return (

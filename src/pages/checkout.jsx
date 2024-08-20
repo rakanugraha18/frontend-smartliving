@@ -29,6 +29,7 @@ const CheckoutPage = () => {
   const userId = localStorage.getItem("user_id");
   const orderId = localStorage.getItem("order_id");
   const token = localStorage.getItem("token");
+  const [addressList, setAddressList] = useState([]);
 
   const navigate = useNavigate();
 
@@ -55,7 +56,24 @@ const CheckoutPage = () => {
       }
     };
 
+    const fetchAddressList = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/address/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setAddressList(response.data.addresses); // Update state addressList
+      } catch (error) {
+        console.error("Error fetching address list:", error);
+      }
+    };
+
     fetchOrderData();
+    fetchAddressList();
   }, [userId, orderId]);
 
   const handleAddressSelect = (id) => {
@@ -66,11 +84,14 @@ const CheckoutPage = () => {
     setAddressData(data);
   };
 
+  const handleNewAddress = (newAddress) => {
+    setAddressList((prevList) => [...prevList, newAddress]);
+  };
+
   const handleSubmit = async () => {
     if (!selectedAddressId || !paymentMethod || !selectedBank) {
       alert("Please select an address, payment method, and bank.");
       return;
-      na;
     }
 
     // Tentukan paymentMethodId berdasarkan selectedBank dan paymentMethod
@@ -113,7 +134,7 @@ const CheckoutPage = () => {
         }
       );
 
-      alert("Order updated successfully!");
+      alert("Order berhasil dibuat!");
     } catch (error) {
       console.error("Error updating order:", error);
       alert("Failed to update order.");
@@ -137,10 +158,14 @@ const CheckoutPage = () => {
           <div className="flex justify-center items-center bg-[#EBEEF3] h-[51px] mb-4">
             <h2 className="text-xl font-semibold">ALAMAT PENGIRIMAN</h2>
           </div>
-          <AddressList onSelectAddress={handleAddressSelect} />
+          <AddressList
+            addressList={addressList}
+            onSelectAddress={handleAddressSelect}
+          />
           <AddressForm
             selectedAddressId={selectedAddressId}
-            onAddressDataChange={handleAddressDataChange} // Perbarui data alamat
+            onAddressDataChange={handleAddressDataChange}
+            onNewAddress={handleNewAddress} // Tambahkan prop untuk callback
           />
         </div>
 

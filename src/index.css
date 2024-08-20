@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.notification {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.notification.loading {
+  background-color: #007bff; /* Blue for loading */
+}
+
+.notification.done {
+  background-color: #28a745; /* Green for success */
+}
+
+.notification.error {
+  background-color: #dc3545; /* Red for error */
+}

@@ -13,6 +13,8 @@ export const CartProvider = ({ children }) => {
   const [cartId, setCartId] = useState(localStorage.getItem("id_cart"));
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("token");
+
   // Ambil userId dari localStorage jika belum ada di state
   useEffect(() => {
     const storedUserId = localStorage.getItem("user_id");
@@ -45,6 +47,32 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Initialize cart if not present
+  useEffect(() => {
+    const initializeCart = async () => {
+      if (!cartId && userId) {
+        try {
+          const createCartResponse = await axios.post(
+            `${import.meta.env.VITE_API_BASEURL}/cart/create-cart`,
+            { user_id: userId },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          setCartId(createCartResponse.data.cart.id);
+          localStorage.setItem("id_cart", createCartResponse.data.cart.id);
+        } catch (error) {
+          console.error("Error creating cart:", error);
+        }
+      }
+    };
+
+    initializeCart();
+  }, [cartId, userId]);
+
   useEffect(() => {
     fetchCartItems();
   }, [userId]);
@@ -71,29 +99,18 @@ export const CartProvider = ({ children }) => {
       return;
     }
 
+    let token = localStorage.getItem("token");
+    if (!token) {
+      console.error("User is not authenticated.");
+      return;
+    }
+
+    if (!cartId) {
+      // Cart will be initialized by useEffect if not present
+      return;
+    }
+
     try {
-      let token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("User is not authenticated.");
-      }
-
-      if (!cartId) {
-        const createCartResponse = await axios.post(
-          `${import.meta.env.VITE_API_BASEURL}/cart/create-cart`,
-          {
-            user_id: userId,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setCartId(createCartResponse.data.cart.id);
-        localStorage.setItem("id_cart", createCartResponse.data.cart.id);
-      }
-
       const existingItem = cartItems.find(
         (item) => item.product_id === product.id
       );
@@ -101,9 +118,7 @@ export const CartProvider = ({ children }) => {
       if (existingItem) {
         await axios.put(
           `${import.meta.env.VITE_API_BASEURL}/cart/items/${existingItem.id}`,
-          {
-            quantity: existingItem.quantity + quantity,
-          },
+          { quantity: existingItem.quantity + quantity },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -121,10 +136,7 @@ export const CartProvider = ({ children }) => {
       } else {
         const addItemResponse = await axios.post(
           `${import.meta.env.VITE_API_BASEURL}/cart/${cartId}/items`,
-          {
-            product_id: product.id,
-            quantity,
-          },
+          { product_id: product.id, quantity },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -132,11 +144,7 @@ export const CartProvider = ({ children }) => {
           }
         );
 
-        const newItem = {
-          ...product,
-          quantity,
-          id: addItemResponse.data.id,
-        };
+        const newItem = { ...product, quantity, id: addItemResponse.data.id };
 
         setCartItems((prevItems) => [...prevItems, newItem]);
       }
@@ -205,11 +213,14 @@ export const CartProvider = ({ children }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASEURL}/cart/checkout/${userId}`,
+        { itemsToCheckout: selectedItems }, // Body request
         {
-          itemsToCheckout: selectedItems,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Pastikan konten JSON
+          },
         }
       );
-
       console.log("Checkout response:", response.data);
 
       const order_id = response.data.order.id;
