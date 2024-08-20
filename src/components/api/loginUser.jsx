@@ -19,9 +19,9 @@ const loginUser = async (email, password) => {
     localStorage.setItem("token", token);
     localStorage.setItem("user_id", user_id);
 
-    return token;
+    return { token, user_id }; // Mengembalikan token dan user_id
   } catch (error) {
-    console.error("Login failed", error);
+    console.error("Login failed", error.response?.data || error.message);
     throw error;
   }
 };

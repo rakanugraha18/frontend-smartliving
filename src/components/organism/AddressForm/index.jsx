@@ -3,7 +3,12 @@ import axios from "axios";
 import Button from "../../atoms/Button";
 import InputForm from "../../atoms/Input";
 
-const AddressForm = ({ selectedAddressId, onEnable }) => {
+const AddressForm = ({
+  selectedAddressId,
+  onAddressDataChange,
+  onNewAddress,
+  onEnable,
+}) => {
   const apiKey =
     "2cfd80e4e2928634a890259476e7fc7181615888611972711d13f953c7d858a9";
   const token = localStorage.getItem("token");
@@ -28,6 +33,8 @@ const AddressForm = ({ selectedAddressId, onEnable }) => {
     villageName: "",
   });
   const [isDisabled, setIsDisabled] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -87,31 +94,59 @@ const AddressForm = ({ selectedAddressId, onEnable }) => {
     }
   };
 
-  const submitForm = () => {
-    const userId = localStorage.getItem("user_id");
+  const submitForm = async (event) => {
+    event.preventDefault();
+    const confirmation = window.confirm("Apakah alamat sudah lengkap?");
 
-    const dataToSend = {
-      userId,
-      address_name: formData.address_name,
-      province: selectedNames.provinceName,
-      city: selectedNames.cityName,
-      subdistrict: selectedNames.subdistrictName,
-      villages: selectedNames.villageName,
-      full_address: formData.full_address,
-      postal_code: formData.postal_code,
-      phone_number: formData.phone_number,
-    };
+    if (confirmation) {
+      setIsLoading(true);
+      setNotificationMessage(""); // Clear previous messages
+      setIsDisabled(true); // Disable the button
 
-    axios
-      .post("http://localhost:3000/api/address/add-address", dataToSend, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) =>
-        console.log("Alamat berhasil dikirim:", response.data)
-      )
-      .catch((error) => console.error("Error mengirim alamat:", error));
+      const userId = localStorage.getItem("user_id");
+
+      const dataToSend = {
+        userId,
+        address_name: formData.address_name,
+        province: selectedNames.provinceName,
+        city: selectedNames.cityName,
+        subdistrict: selectedNames.subdistrictName,
+        villages: selectedNames.villageName,
+        full_address: formData.full_address,
+        postal_code: formData.postal_code,
+        phone_number: formData.phone_number,
+      };
+
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/address/add-address",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(dataToSend),
+          }
+        );
+
+        const result = await response.json();
+        if (result.status === "ok") {
+          // Optionally handle success
+          window.location.reload(); // Reload the page
+        } else {
+          setNotificationMessage(result.message);
+        }
+      } catch (error) {
+        setNotificationMessage("Failed to submit the form");
+      } finally {
+        setIsLoading(false);
+        setIsDisabled(false);
+      }
+    } else {
+      setIsLoading(false);
+      setIsDisabled(false);
+    }
   };
 
   const handleProvinceChange = (e) => {
@@ -374,10 +409,15 @@ const AddressForm = ({ selectedAddressId, onEnable }) => {
                 disabled={isDisabled}
               />
             </div>
-
+            {/* Form fields */}
             <Button type="button" onClick={submitForm} disabled={isDisabled}>
-              Kirim
+              {isLoading ? "Loading..." : "Kirim"}
             </Button>
+            {notificationMessage && (
+              <div className={`notification ${isLoading ? "loading" : "done"}`}>
+                {notificationMessage}
+              </div>
+            )}
           </form>
         </div>
       </div>
