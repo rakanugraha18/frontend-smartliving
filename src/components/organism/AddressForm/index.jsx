@@ -119,7 +119,7 @@ const AddressForm = ({
 
       try {
         const response = await fetch(
-          "http://localhost:3000/api/address/add-address",
+          `${import.meta.env.VITE_API_BASEURL}/address/add-address`,
           {
             method: "POST",
             headers: {

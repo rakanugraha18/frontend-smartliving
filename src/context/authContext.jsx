@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   const registerUser = async (userData) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/customers/login-with-google",
+        `${import.meta.env.VITE_API_BASEURL}customers/login-with-google`,
         userData
       );
       setIsAuthenticated(true);

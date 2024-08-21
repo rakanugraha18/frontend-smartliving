@@ -11,7 +11,7 @@ const AddressList = ({ onSelectAddress }) => {
     const fetchAddresses = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/address/addresses/check",
+          `${import.meta.env.VITE_API_BASEURL}/address/addresses/check`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ const AddressList = ({ onSelectAddress }) => {
     if (window.confirm("Are you sure you want to delete this address?")) {
       try {
         const deleteResponse = await fetch(
-          `http://localhost:3000/api/address/${id}`,
+          `${import.meta.env.VITE_API_BASEURL}/address/${id}`,
           {
             method: "DELETE",
             headers: {

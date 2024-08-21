@@ -43,7 +43,7 @@ const CheckoutPage = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/api/order/${userId}/${orderId}`,
+          `${import.meta.env.VITE_API_BASEURL}/order/${userId}/${orderId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -128,11 +128,15 @@ const CheckoutPage = () => {
       };
 
       await axios
-        .put(`http://localhost:3000/api/order/${orderId}`, requestData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        .put(
+          `${import.meta.env.VITE_API_BASEURL}/order/${orderId}`,
+          requestData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then(() => {
           alert("Pesanan berhasil dibuat!");
           navigate("/orderDetails");

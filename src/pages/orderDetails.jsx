@@ -23,7 +23,7 @@ const OrderDetails = () => {
     const fetchOrderDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/order/${userId}/${orderId}`,
+          `${import.meta.env.VITE_API_BASEURL}/order/${userId}/${orderId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
