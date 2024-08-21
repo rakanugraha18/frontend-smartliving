@@ -6,7 +6,6 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import axios from "axios";
 
 const AuthContext = createContext();
-const token = localStorage.getItem("token");
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,8 +16,13 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     if (token) {
       setIsAuthenticated(true);
-      // You might want to fetch user info based on the token here
-      // Example: fetchUserInfo(token).then(setUser);
+      // Ambil informasi pengguna jika diperlukan
+      // fetchUserInfo(token).then(setUser); // Contoh fungsi untuk mengambil data pengguna
+      // Panggil checkOrder jika token ada
+      const userId = localStorage.getItem("user_id");
+      if (userId) {
+        checkOrder(userId);
+      }
     }
   }, []);
 
@@ -31,10 +35,13 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user_id", user_id);
 
       createCart(user_id); // Membuat cart jika diperlukan
+
+      // Panggil checkOrder setelah token diset
+      checkOrder(user_id);
     } catch (error) {
       setIsAuthenticated(false);
       console.error("Login failed", error.message);
-      throw new Error("Login failed"); // Pastikan error ditangani dengan baik
+      throw new Error("Login failed");
     }
   };
 
@@ -42,7 +49,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      setIsAuthenticated(true);
       const user = result.user;
 
       const [firstName, ...lastNameParts] = user.displayName.split(" ");
@@ -52,18 +58,16 @@ export const AuthProvider = ({ children }) => {
         last_name: lastName,
         email: user.email,
         phone_number: user.phoneNumber || "089977882288",
-        // Tidak ada password karena Google sudah mengelola autentikasi
       };
 
-      localStorage.setItem("token", token);
-      const user_id = localStorage.getItem("user_id");
-
+      // Panggil registerUser dan createCart setelah Google Sign-In
       await registerUser(userData);
+      const user_id = localStorage.getItem("user_id");
       createCart(user_id);
+      checkOrder(user_id); // Panggil checkOrder setelah cart dibuat
     } catch (error) {
       setIsAuthenticated(false);
       console.error("Error signing in with Google:", error);
-      console.error("Kesalahan saat login dengan Google:", error);
     }
   };
 
@@ -74,7 +78,6 @@ export const AuthProvider = ({ children }) => {
         userData
       );
       setIsAuthenticated(true);
-      console.log("Pengguna terdaftar:", response.data);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user_id", response.data.userId);
       // Redirect setelah login berhasil
@@ -86,10 +89,10 @@ export const AuthProvider = ({ children }) => {
         error.response.data.error === "Email sudah terdaftar"
       ) {
         // Jika email sudah terdaftar, login
-        await login(userData.email, ""); // Password kosong untuk login, jika diperlukan
+        await login(userData.email, ""); // Password kosong untuk login
         navigate("/");
       } else {
-        console.error("Kesalahan saat mendaftarkan pengguna:", error);
+        console.error("Error registering user:", error);
       }
     }
   };
@@ -97,7 +100,9 @@ export const AuthProvider = ({ children }) => {
   const createCart = async (userId) => {
     try {
       let cartId = localStorage.getItem("id_cart");
-      if (!cartId) {
+      const token = localStorage.getItem("token");
+
+      if (!cartId && token) {
         const response = await axios.post(
           `${import.meta.env.VITE_API_BASEURL}/cart/create-cart`,
           { user_id: userId },
@@ -110,6 +115,49 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Error creating cart:", error.message);
+    }
+  };
+
+  const checkOrder = async (userId) => {
+    try {
+      if (!userId) {
+        throw new Error("User ID tidak tersedia.");
+      }
+
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASEURL}/order/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Cek apakah response.data adalah array
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          // Extract order IDs and statuses
+          const ordersSummary = response.data.map((order) => ({
+            id: order.id,
+            status: order.status,
+          }));
+
+          // Simpan array yang berisi ID dan status pesanan ke localStorage
+          localStorage.setItem("order_summary", JSON.stringify(ordersSummary));
+
+          console.log(ordersSummary);
+
+          // Lakukan tindakan tambahan sesuai kebutuhan
+        } else {
+          console.log("Order tidak ditemukan untuk user:", userId);
+        }
+      } else {
+        console.error("Token tidak tersedia.");
+      }
+    } catch (error) {
+      console.error("Error fetching order data:", error);
     }
   };
 
@@ -131,6 +179,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         handleGoogleSignIn,
+        checkOrder,
       }}
     >
       {children}
