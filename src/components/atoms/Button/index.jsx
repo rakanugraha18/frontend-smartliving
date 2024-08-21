@@ -9,6 +9,7 @@ const Button = ({
   classname,
   children,
   onClick,
+  disabled,
 }) => {
   // Define size classes
   const sizeClasses = {
@@ -24,11 +25,23 @@ const Button = ({
     secondary: "bg-white border-[#16697A] border-2 text-[#16697A]",
   };
 
+  // Define disabled styles
+  const disabledClasses = "bg-gray-400 text-gray-600 cursor-not-allowed";
+
+  // Determine the final class names
+  const classes = `
+    font-medium rounded-[40px] text-center
+    ${sizeClasses[size]}
+    ${disabled ? disabledClasses : colorClasses[color]}
+    ${classname}
+  `;
+
   return (
     <button
+      disabled={disabled}
       onClick={onClick}
       type={type}
-      className={`font-medium rounded-[40px] text-center ${sizeClasses[size]} ${colorClasses[color]} ${classname}`}
+      className={classes}
     >
       {children}
     </button>
@@ -41,6 +54,8 @@ Button.propTypes = {
   size: PropTypes.oneOf(["small", "medium", "large", "xlarge"]),
   color: PropTypes.oneOf(["primary", "secondary"]),
   children: PropTypes.node.isRequired,
+  onClick: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 export default Button;

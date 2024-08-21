@@ -43,7 +43,7 @@ const AddressList = ({ onSelectAddress }) => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this address?")) {
       try {
-        const response = await fetch(
+        const deleteResponse = await fetch(
           `http://localhost:3000/api/address/${id}`,
           {
             method: "DELETE",
@@ -52,30 +52,20 @@ const AddressList = ({ onSelectAddress }) => {
             },
           }
         );
-        const data = await response.json();
 
-        if (data.status === "ok") {
-          // Re-fetch addresses after deletion
-          const response = await fetch(
-            "http://localhost:3000/api/address/addresses/check",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const updatedData = await response.json();
+        if (!deleteResponse.ok) {
+          throw new Error("Failed to delete address");
+        }
 
-          if (updatedData.status === "ok") {
-            setAddresses(updatedData.data);
-          } else {
-            setError(updatedData.message);
-          }
+        const deleteData = await deleteResponse.json();
+
+        if (deleteData.status === "ok") {
+          window.location.reload();
         } else {
-          setError(data.message);
+          setError(deleteData.message);
         }
       } catch (error) {
-        setError("Failed to delete address");
+        setError(error.message || "Failed to delete address");
       }
     }
   };
@@ -96,8 +86,7 @@ const AddressList = ({ onSelectAddress }) => {
               onClick={() => handleSelect(address.id)}
             >
               <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent click event from triggering handleSelect
+                onClick={() => {
                   handleDelete(address.id);
                 }}
                 className="absolute top-2 right-2 text-red-500"

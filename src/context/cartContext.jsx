@@ -217,7 +217,7 @@ export const CartProvider = ({ children }) => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Pastikan konten JSON
+            "Content-Type": "application/json",
           },
         }
       );
@@ -234,7 +234,13 @@ export const CartProvider = ({ children }) => {
       setSelectedItems([]);
       navigate("/checkout");
     } catch (error) {
-      console.error("Terjadi kesalahan saat checkout:", error.message);
+      // Memeriksa jika error terkait stok produk
+      if (error.response && error.response.data && error.response.data.error) {
+        alert(error.response.data.error); // Menampilkan pesan error sebagai alert
+      } else {
+        console.error("Error during checkout:", error.message);
+        alert("Terjadi kesalahan saat melakukan checkout. Silakan coba lagi.");
+      }
     }
   };
 
