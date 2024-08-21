@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   const registerUser = async (userData) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/customers/login-with-google",
+        `${import.meta.env.VITE_API_BASEURL}customers/login-with-google`,
         userData
       );
       setIsAuthenticated(true);
@@ -146,8 +146,6 @@ export const AuthProvider = ({ children }) => {
 
           // Simpan array yang berisi ID dan status pesanan ke localStorage
           localStorage.setItem("order_summary", JSON.stringify(ordersSummary));
-
-          console.log(ordersSummary);
 
           // Lakukan tindakan tambahan sesuai kebutuhan
         } else {

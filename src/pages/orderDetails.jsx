@@ -23,7 +23,7 @@ const OrderDetails = () => {
     const fetchOrderDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/order/${userId}/${orderId}`,
+          `${import.meta.env.VITE_API_BASEURL}/order/${userId}/${orderId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ const OrderDetails = () => {
         </div>
         <div className="flex justify-between py-[15px] border-b border-black border-1 mb-[15px]">
           <p className="text-sm">Nomor Pesanan: </p>
-          <p>18082024{order.id}</p>
+          <p>#18082024{order.id}</p>
         </div>
 
         <div className="py-[15px] border-b border-black border-1 mb-[15px]">

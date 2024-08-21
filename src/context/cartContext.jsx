@@ -77,22 +77,6 @@ export const CartProvider = ({ children }) => {
     fetchCartItems();
   }, [userId]);
 
-  const updateQuantity = async (id, newQuantity) => {
-    try {
-      await axios.put(`${import.meta.env.VITE_API_BASEURL}/cart/items/${id}`, {
-        quantity: newQuantity,
-      });
-
-      setCartItems((prevItems) =>
-        prevItems.map((item) =>
-          item.id === id ? { ...item, quantity: newQuantity } : item
-        )
-      );
-    } catch (error) {
-      console.error("Failed to update quantity:", error.message);
-    }
-  };
-
   const addItemToCart = async (product, quantity) => {
     if (!product || !product.id) {
       console.error("Product or product ID is missing.");
@@ -161,6 +145,24 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const updateQuantity = async (id, newQuantity) => {
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_BASEURL}/cart/items/${id}`,
+        { quantity: newQuantity }, // Data yang dikirimkan dalam body
+        { headers: { Authorization: `Bearer ${token}` } } // Header Authorization di sini
+      );
+
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === id ? { ...item, quantity: newQuantity } : item
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update quantity:", error.message);
+    }
+  };
+
   const deleteCartItem = async (itemId) => {
     const updatedCartItems = cartItems.filter((item) => item.id !== itemId);
     setCartItems(updatedCartItems);
@@ -171,7 +173,8 @@ export const CartProvider = ({ children }) => {
     try {
       await axios.post(
         `${import.meta.env.VITE_API_BASEURL}/cart/items/delete`,
-        { item_ids: [itemId] }
+        { item_ids: [itemId] }, // Data yang dikirimkan dalam body
+        { headers: { Authorization: `Bearer ${token}` } } // Header Authorization di sini
       );
     } catch (error) {
       console.error("Error deleting item:", error);
@@ -197,7 +200,8 @@ export const CartProvider = ({ children }) => {
     try {
       await axios.post(
         `${import.meta.env.VITE_API_BASEURL}/cart/items/delete`,
-        { item_ids: selectedItems }
+        { item_ids: selectedItems }, // Data yang dikirimkan dalam body
+        { headers: { Authorization: `Bearer ${token}` } } // Header Authorization di sini
       );
     } catch (error) {
       console.error("Error deleting items:", error);

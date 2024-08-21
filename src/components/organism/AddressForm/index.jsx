@@ -119,7 +119,7 @@ const AddressForm = ({
 
       try {
         const response = await fetch(
-          "http://localhost:3000/api/address/add-address",
+          `${import.meta.env.VITE_API_BASEURL}/address/add-address`,
           {
             method: "POST",
             headers: {
@@ -410,8 +410,14 @@ const AddressForm = ({
               />
             </div>
             {/* Form fields */}
-            <Button type="button" onClick={submitForm} disabled={isDisabled}>
-              {isLoading ? "Loading..." : "Kirim"}
+            <Button
+              type="button"
+              size="xlarge"
+              onClick={submitForm}
+              disabled={isDisabled}
+              classname={` focus:ring-4 md:w-[100%] w-[80%] focus:ring-[#16737a]`}
+            >
+              {isLoading ? "Loading..." : "Tambahkan Alamat"}
             </Button>
             {notificationMessage && (
               <div className={`notification ${isLoading ? "loading" : "done"}`}>
