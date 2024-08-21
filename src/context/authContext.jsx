@@ -147,8 +147,6 @@ export const AuthProvider = ({ children }) => {
           // Simpan array yang berisi ID dan status pesanan ke localStorage
           localStorage.setItem("order_summary", JSON.stringify(ordersSummary));
 
-          console.log(ordersSummary);
-
           // Lakukan tindakan tambahan sesuai kebutuhan
         } else {
           console.log("Order tidak ditemukan untuk user:", userId);
