@@ -1,7 +1,61 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
-function index() {
-  return <div>index</div>;
-}
+const Button = ({
+  type = "button",
+  size = "medium",
+  color = "primary",
+  classname,
+  children,
+  onClick,
+  disabled,
+}) => {
+  // Define size classes
+  const sizeClasses = {
+    small: "w-[145px] h-[34px] text-[14px] px-[32px] py-[1px]",
+    medium: "w-[283px] h-[53px] text-[14px] px-[32px] py-[16px]",
+    large: "w-[420px] h-[56px] text-[14px] px-[32px] py-[16px]",
+    xlarge: "w-[580px] h-[62px] text-[14px] px-[32px] py-[16px]",
+  };
 
-export default index;
+  // Define color classes
+  const colorClasses = {
+    primary: "bg-[#16697A] text-white",
+    secondary: "bg-white border-[#16697A] border-2 text-[#16697A]",
+  };
+
+  // Define disabled styles
+  const disabledClasses = "bg-gray-400 text-gray-600 cursor-not-allowed";
+
+  // Determine the final class names
+  const classes = `
+    font-medium rounded-[40px] text-center
+    ${sizeClasses[size]}
+    ${disabled ? disabledClasses : colorClasses[color]}
+    ${classname}
+  `;
+
+  return (
+    <button
+      disabled={disabled}
+      onClick={onClick}
+      type={type}
+      className={classes}
+    >
+      {children}
+    </button>
+  );
+};
+
+// Define PropTypes for validation
+Button.propTypes = {
+  type: PropTypes.oneOf(["button", "submit", "reset"]),
+  size: PropTypes.oneOf(["small", "medium", "large", "xlarge"]),
+  color: PropTypes.oneOf(["primary", "secondary"]),
+  children: PropTypes.node.isRequired,
+  onClick: PropTypes.func,
+  disabled: PropTypes.bool,
+};
+
+export default Button;
